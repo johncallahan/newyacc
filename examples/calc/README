@@ -1,0 +1,14 @@
+Calc is the canonical calculator grammar, as found in so many documents
+discussing context free grammars. 
+
+Call "calc" as usual ... enter simple arithmetic strings as usual ...
+then at EOF the program will traverse your input expressions and print
+them out in various forms.  Which form? By default, it will print them
+as infix. But you can invoke calc with a single command line argument
+to ask for prefix or postfix output as well ... e.g. 
+	calc prefix
+or
+	calc postfix
+or
+	calc infix
+

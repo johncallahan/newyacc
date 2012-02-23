@@ -1,0 +1,78 @@
+***************************************************************************
+
+             NewYacc - an improved parser generator system
+
+			VERSION 0.7 April 1990
+
+This file gives brief notes on changes, fixes, and enhancements
+included in this version (0.7) that are not included in previously
+released versions.
+
+***************************************************************************
+
+>>> INSTALLATION FIXES <<<
+
+none
+
+>>> NEWYACC FIXES <<<
+
+(1) Problem with references within functions fixed.  Something like
+    "... @a=func(@b) ..." would break NewYacc 0.6, even though this
+    worked in previous versions.  Fix was to the file newyacc.y
+    (Sing Chi Cheung @ Imperial College, London)
+
+(2) Redefined REALLOC in nymem.h
+    (Sing Chi Cheung @ Imperial College, London)
+
+>>> TRIVIAL FIXES <<<
+
+none
+
+>>> DOCUMENTATION <<<
+
+(1) A NewYacc user's manual is almost completed.  Please stay tuned.
+    It will be released at the end of the Summer of 1990 with the
+    NewYacc 0.8 release.
+
+>>> WARNINGS <<<
+
+(1) A NewYacc feature was discovered.  Do NOT reassign references
+    or create circularities with reference variables through the
+    use of assignment.  The following will not work:
+
+	... @a="abc" @a=func1(@a) @b=func2(@a) @b ...
+
+    because @a will call itself until it exhausts the call stack.
+    NewYacc does not actually perform the function calls until the
+    final @b.  In other words, the @a=func1(@a) function evaluates
+    to func1(func1(func1(...))).  NewYacc only assigns pointers in
+    assignment statements because of the problem of storing all those
+    parse subtrees.  This "feature" may be fixed in a later version.
+    A work-around solution is to use another reference variable:
+
+	... @c="abc" @a=func1(@c) @b=func2(@a) @b ...
+
+    (Sing Chi Cheung @ Imperial College, London)
+
+>>> EXAMPLES <<<
+
+The set of examples in this version (0.7) is unchanged from previous
+versions.  C and Ada examples are available if you have the proper
+licensing agreements for your site.  Contact us as per instructions
+inthe README file in this directory.
+
+>>> WANTED: ADDITIONAL FIXES, CHANGES, AND ENHANCEMENTS <<<
+
+Bug fixes or extensions are never guaranteed, but we're happy to have
+feedback on your experiences!
+
+
+Jim Purtilo					Jack Callahan
+purtilo@cs.umd.edu				callahan@cs.umd.edu
+
+
+Institute for Advanced Computer Studies
+   and Computer Science Department
+University of Maryland
+College Park, MD 20742
+

@@ -1,0 +1,10 @@
+These annotations list rules and translations found in newyacc
+source files.  For example, the file "newyacc.ny" can itself be
+piped through the lister programs called "listtrans" and "listrules".
+If you want to know how many translations you have in a grammar
+then you can run
+
+	listtrans < yourfile.ny | wc -l
+
+Ditto for "listrules" ...
+

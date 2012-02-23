@@ -1,0 +1,25 @@
+This is my test example for the line number and character within
+line positioning functions built into NewYacc for the Cinema tool.
+
+Sample input string can be found in files "samplestring1" and
+"samplestring2" and demonstrate the following features:
+
+	starting line
+	starting character within line
+	ending line
+	ending character within line
+
+as 4-tuples after tokens in the parsed strings.  After making the
+executables,  you can run the tool on data in files "samplestring1"
+or "samplestring2"
+
+Stripped of newyacc translations, the language is essentially 
+
+	alist	:	C
+		|	D A alist B
+		|	E A alist B
+		|	other A alist B
+
+	other	:  /* empty */
+		|	F
+		|	G 

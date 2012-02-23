@@ -1,0 +1,97 @@
+***************************************************************************
+
+             NewYacc - an improved parser generator system
+
+			VERSION 0.6 April 1990
+
+This file gives brief notes on changes, fixes, and enhancements
+included in this version (0.6) that are not included in previously
+released versions.
+
+***************************************************************************
+
+>>> INSTALLATION FIXES <<<
+
+(1)	The "make clean" and "make reallyclean" directives should work
+	from the top-level in this version (0.6).
+	(Bruce Cohen, bruce@orca.wv.tek.com)
+
+(2)	The macro "NYTABCFIX" is passed to lower-level makefiles in
+	this version (0.6).
+	(Bruce Cohen, bruce@orca.wv.tek.com)
+
+(3)	Name of NewYacc library to use in building examples is passed
+	down to low-level makefiles in this version (0.6).
+	(Bruce Cohen, bruce@orca.wv.tek.com)
+
+>>> NEWYACC FIXES <<<
+
+(4)	Name conflicts are totally isolated in this version (0.6).
+	Avoid use of names with prefixes "ny_" and "yy" since thay are
+	internally defined.
+
+(5)	The variable "yylineno" is defined consistently in the fix
+	scripts, nytabcfix.yacc, nytabcfix.byacc, and nylexfix.lex.
+
+(6)	NewYacc accepts literals in single and double quotes in this
+	version (0.6).
+
+(7)	NewYacc accepts the literal '\'' in this version (0.6).
+
+(8)	NewYacc accepts "^L" characters in the input file in this
+	version (0.6).
+
+(9)	An obscure bug was fixed in the implementation of the
+	IF...THEN and IF...THEN...ELSE statements.  The else branch
+	was not being initialized to NIL in the former.  When memory
+	got reused, a segmentation fault would occur.
+
+(10)	Variable assignment semantics are now BY-VALUE instead of
+	BY-REFERENCE in this version (0.6).  Assignments were simple
+	pointer reassignments before, but this has been changed.
+
+(11)	Debugging is improved.  The yyerror routine was redefined to
+	be more useful.
+	(Stephen Adams, sra%ecs.southhampton.ac.uk@NSFnet-Relay.AC.UK)
+
+(12)	A reference assignment problem is fixed in this version (0.6)
+	(e.g., @x=@y would fail).
+
+(13)	A reference argument problem is fixed in this version (0.6)
+	(e.g., foo(@x) would fail).
+
+(14)	A problem with the use of some user-defined functions is fixed
+	in this version (0.6).
+
+>>> TRIVIAL FIXES <<<
+
+(15)	The usage message for newyacc reads "newyacc" not "nyacc" in
+	this version (0.6).
+	(Bruce Cohen, bruce@orca.wv.tek.com)
+
+(16)	The usage message for the calc examples reads correctly in
+	this version (0.6).
+	(Bruce Cohen, bruce@orca.wv.tek.com)
+
+>>> EXAMPLES <<<
+
+The set of examples in this version (0.6) is unchanged from previous
+versions.  C and Ada examples are available if you have the proper
+licensing agreements for your site.  Contact us as per instructions
+inthe README file in this directory.
+
+>>> WANTED: ADDITIONAL FIXES, CHANGES, AND ENHANCEMENTS <<<
+
+Bug fixes or extensions are never guaranteed, but we're happy to have
+feedback on your experiences!
+
+
+Jim Purtilo					Jack Callahan
+purtilo@cs.umd.edu				callahan@cs.umd.edu
+
+
+Institute for Advanced Computer Studies
+   and Computer Science Department
+University of Maryland
+College Park, MD 20742
+

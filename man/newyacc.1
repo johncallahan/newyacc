@@ -1,0 +1,101 @@
+.\" Copyright (c) 1989 University of Maryland
+.\" All rights reserved.
+.\"
+.\"	@(#)newyacc.1	1.0 (Maryland) 10/04/89
+.\"
+.TH NEWYACC 1 "October 4, 1989"
+.UC 4
+.SH NAME
+newyacc \- an improved parser generator system
+.SH SYNOPSIS
+.B newyacc
+.RB [ " \-f "
+.RI "grammarfile"
+.RB ]
+.RB [ " \-sld " ]
+.RB [ " \-Y "
+.RI "yaccbinary"
+.RB ]
+.SH INTRODUCTION
+.RI Newyacc
+is an improved version of the popular parser generator program
+.RI yacc
+and is a superset of the latter.  Newyacc provides inherited attributes,
+a macro-like syntax for easier use, automatic storage management, and
+post-processing of the constructed parse tree.
+.PP
+Like yacc, the file
+.RI y.tab.c
+is produced as output and must be compiled by the C compiler to
+produce the
+.RI yyparse
+program.  This program, the associated lexical analysis routine
+.RI yylex
+, a
+.RI main
+routine, and the
+.RI newyacc
+library (\-lny) must be loaded together to
+create the parser's executable image. In addition, the file
+.RI nytags.h
+is produced which contains the display tag definitions created for newyacc
+parse tree traversals and should be included in the main program file.
+.PP
+The
+.RB \-f
+option precedes the name of the input grammar specification file.  The
+.RB \-s
+option specifies that the input grammar specification is on the stdin
+stream.  These two options toggle from left to right on the command
+line.  The
+.RB \-l
+option instructs the program to leave intermediate files (ny.temp.y
+and y.output) around instead of purging them.
+.RI Newyacc
+makes a subsequent call to the system installed version of the standard
+.RI yacc
+program, but this can be changed by use of the
+.RB \-Y
+option and an alternate yacc executable filename. The
+.RB \-d
+option feeds the "-vd" flags to the subsequent
+.RI yacc
+call which makes yacc produce the intermediate files y.output and y.tab.h.
+.SH FILES
+.if n .ta 2.5i
+.if t .ta 1.8i
+y.output	LR(1) tables for debugging
+.br
+y.tab.c		LR(1) tables
+.br
+y.tab.h		yacc header file
+.br
+ny.temp.y	intermediate yacc specification
+.br
+nytags.h	display tag definitions
+.br
+/usr/lib/yaccpar	the parser automaton include file
+.SH "SEE ALSO"
+.IR lex(1)
+.LP
+.IR yacc(1)
+.LP
+.RI "Parse Tree Annotations"
+by J. Purtilo and J. Callahan, Communications of the ACM,
+December 1989.
+.LP
+.RI "LR Parsing"
+by A. V. Aho and S. C. Johnson, Computing Surveys, June, 1974
+.LP
+Yacc (Yet Another Compiler Compiler) in Programming Utilities for the
+Sun Workstation. "YACC \- Yet Another Compiler Compiler" by S. C. Johnson.
+.SH BUGS
+The program is supposed to accept plain yacc specifications without problem
+as it is a superset of yacc.  There may be problems, however, as extensive
+testing has not been done and there are a wide number of other yacc
+variants.
+.LP
+A good debugging technique for now is to look at the ny.temp.y
+intermediate file.
+.SH AUTHOR
+Jack Callahan

@@ -1,0 +1,277 @@
+***************************************************************************
+
+             NewYacc - an improved parser generator system
+
+		(DISTRUBUTION #0)
+
+This file gives instructions for installing NewYacc on your system, then
+presents a brief summary of NewYacc itself.  Enjoy!
+
+If NewYacc is installed on your system (either in public or private areas)
+and you just want to use NewYacc, read this file, but skip the INSTALLATION
+section.  If you are installing NewYacc, read this entire file.
+
+New README files are normally issued with a new DISTRIBUTION.  A VERSION
+number is made up of two numbers: DISTRIBUTION.RELEASE.  The README(VERSION)
+file in this directory contains release-specific information.  This file
+contains distribution specific information and should not change for
+releases with the same distribution number.
+
+***************************************************************************
+
+>>> INSTALLATION <<<
+
+Edit the Makefile in this directory, and look for the definitions of
+DESTBINS, DESTSCRIPTS, DESTLIBS, DESTAUXS, and INSTDIR.  Change them to be
+whatever source, binary, library directories into which you want newyacc
+installed as follows (see below for list of installed binaries, scripts,
+libraries, and man pages):
+
+	DESTBINS	where executables are installed
+	DESTSCRIPTS	where executable shell scripts are installed
+	DESTLIBS	where libraries are installed
+	DESTMAN		where manual pages are installed
+	INSTDIR         where this distribution resides
+
+To install NewYacc, do the following:
+
+make		--- makes newyacc and libny.a
+make install	--- installs newyacc, libny.a, and the fix scripts
+			in all the right places
+make examples	--- constructs examples in the examples subdirectory
+
+It can't hurt to use make's -n option first, just to make sure the
+installation will work as you think it should.  After everything is made,
+you can do "make clean" for a recursive cleansing of all directories.
+
+The following is a list of binaries, scripts, man files, and
+libraries installed after a "make install":
+
+  newyacc		executable installed in DESTBIN directory
+
+  libny.a		library installed in DESTLIB directory
+
+  nylexfix.lex		shell script installed in DESTSCRIPT directory
+				used to alter lex generated lex.yy.c
+				files for use with NewYacc
+
+  nytabcfix.yacc	shell script installed in DESTSCRIPT directory
+				used to alter yacc generated y.tab.c
+				files for use with NewYacc
+
+  nytabcfix.byacc	shell script installed in DESTSCRIPT directory
+				used to alter Berkeley yacc generated
+				y.tab.c files for use with NewYacc
+  newyacc.1		man page installed in DESTMAN directory
+
+>>> DESCRIPTION <<<
+
+NewYacc, an extension to the popular Unix yacc program, provides a superset
+of yacc with translations attached to grammars in addition to actions.
+Translations are similar to simple syntax directed translation schemas in
+the sense that they will reorder, select, and augment, and echo the input
+character stream by appropriately traversing the completed parse tree.  Some
+related work is the Cornell Synthesizer Generator project with their parse
+tree and display rewrite rules.
+
+NewYacc is a front-end to yacc (either the standard version or Berkeley
+version).  In other words, NewYacc produces a yacc compatible file as output
+(called ny.temp.y).  You need not worry about this because NewYacc
+automatically invokes yacc after producing the ny.temp.y intermediate file.
+You can specify which yacc is invoked with the -Y option to NewYacc.  This
+is helpful for specially built versions of yacc (e.g.  with larger tables)
+and Berkeley yacc.
+
+Here's a simple example of use.  A typical yacc rule for a desk calculator
+to handle parsing and addition sub-expression:
+
+exp	:	exp '+' exp { $$ = $1 + $3; }
+
+To specify a translation for postfix or prefix from the parsed infix
+notation, we simply attach two "displays":
+
+exp     :       exp '+' exp { $$ = $1 + $3; }
+		[ (POSTFIX) "(" #1 " " #3 " +)" ]
+		[ (PREFIX) "(+ " #1 " " #3 ")" ]
+
+In the newyacc file header, include the following:
+
+%tag POSTFIX PREFIX
+
+in order to register the display tags.  To traverse the parse tree
+from the driver program, call nyprint after calling yyparse:
+
+#include "nytags.h"
+main()
+{
+	yyparse();
+	nyprint(myprint,PREFIX,NY_OPEN,NY_NORMAL);
+}
+
+The nytags.h file is produced when running newyacc and contains the display
+tag definitions.  The myprint function is a print function that will be
+called from inside newyacc when it finds a token to be printed during the
+traversal.  The last two arguments specify an open traversal with no string
+filtering.  More on this later.
+
+When performing a traversal of the parse tree, there are several ways one
+would like to control the order and selection.  If, for example, we want to
+echo the input and augment the stream we use an OPEN traversal.  When the
+traversal hits a node where no translation matches, an OPEN traversal will
+print the tokens and traverse further sub-trees in they appear on the RHS of
+the rule.  A SELECTIVE traversal simply ignores tokens in search of the
+intended displays.
+
+Conditional traversal of sub-tree is possible by specifying a new mask.
+Let's say for some strange reason that below the top level parsed addition
+expression you would like all sub-expressions in PREFIX while the top level
+is in POSTFIX:
+
+exp     :       exp '+' exp { $$ = $1 + $3; }
+                [ (POSTFIX) "(" #3(PREFIX) " " #1(PREFIX) " +)" ]
+                [ (PREFIX) "(+ " #1 " " #3 ")" ]
+
+Notice that the sub-trees are switched around.  In addition, you can
+change the selective or open traversal nature (# for open, & for
+selective).
+
+More information can be found in the NewYacc User's Manual or an article in
+the Decmeber 1989 issue of Communications of the ACM.  Note this file
+reflects the evolution of our notation since the CACM publication.
+
+>>> EXAMPLES <<<
+
+The best way to learn how to use NewYacc is by example.  Simple examples are
+provided with all distributions.  Due to copyright problems, however, we
+cannot distribute annotated grammars for programming languages (C, Ansi C,
+Pascal, and Ada).  If you have the proper licensing, contact us at the
+addresses below.
+
+You may make the examples "in place" (in the installation directory) or copy
+them elsewhere in your file system.  HOWEVER, you must do the following so
+that the examples will build properly:
+
+(1)	Have the following executables somewhere on your path:
+
+		newyacc
+		nylexfix.lex
+		nytabcfix.yacc
+		nytabcfix.byacc
+
+(2)	Have the library file libny.a in /usr/lib
+
+		OR
+
+	Edit the example Makefile(s) definition for NYLIBDIR
+
+		OR
+
+	Make each example by explicitly naming the NYLIBDIR
+	(i.e. "make NYLIBDIR=-L/my/local/directory")
+
+The make files in each example subdirectory should prove helpful towards
+understanding the use of NewYacc.  The following examples illustrate most of
+NewYacc's features:
+
+*** calc ***
+
+A simple desktop calculator example.  Evaluates simple expressions and
+at EOF it prints the list of expressions evaluated in POSTFIX, PREFIX,
+or INFIX order.  Type "calc help" for information oce the program is
+made.
+
+*** reverse ***
+
+This is Jim's trivial list reversal example which showed early on how
+NewYacc could do something Yacc can't (easily do).
+
+*** newyacc listers ***
+
+These annotations list rules and translations found in newyacc
+source files.  For example, the file "newyacc.ny" can itself be
+piped through the lister programs called "listtrans" and "listrules".
+If you want to know how many translations you have in a grammar
+then you can run
+
+	listtrans < yourfile.ny | wc -l
+
+Ditto for "listrules" ...
+
+*** simple ***
+
+This is my test example for the line number and character within
+line positioning functions built into NewYacc for the Cinema tool.
+
+Sample input string can be found in files "samplestring1" and
+"samplestring2" and demonstrate the following features:
+
+	starting line
+	starting character within line
+	ending line
+	ending character within line
+
+as 4-tuples after tokens in the parsed strings.  After making the
+executables,  you can run the tool on data in files "samplestring1"
+or "samplestring2"
+
+Stripped of newyacc translations, the language is essentially 
+
+	alist	:	C
+		|	D A alist B
+		|	E A alist B
+		|	other A alist B
+
+	other	:  /* empty */
+		|	F
+		|	G 
+
+>>> THINGS TO LOOK OUT FOR <<<
+(We'd hate to call these "bugs" .... :-)
+
+(1)	List of reserved name in NewYacc:
+
+	identifiers beginning with the letters "ny"
+	identifiers beginning with the letters "yy" (from Yacc)
+
+	Use these and you are in trouble .... There are actually
+	some more names that have not yet been changed, but will
+	be fixed up in release 1.0 (when documentation is ready!)
+
+(2)	Grammars for large languages like C or Ada require that you use a
+	version of "yacc" that has been compiled with the HUGE table size
+	option enabled.  (Remember that our newyacc calls yacc as a substep
+	in preparation of your code.)  If you can prepare your own yacc
+	then remember you can direct that newyacc use it via our -Y option.
+
+(3)	Related to #2 above:  When you compile the y.tab.c that is ultimately
+	generated from our system for large examples like C or Ada, then 
+	you may need to compile it with the -J option enabled (this tells
+	cc to generate long jumps rather than relative branches ... the
+	yacc-generated case statement can often get too long for branches!)
+
+(4)	In the example directories: if you interrupt the "make" then
+	occasionally one of the intermediate files will be left in an
+	incomplete state, but make of course will think it is fine. The
+	easiest way to avoid a debacle is to "make clean" and start from
+	scratch.
+
+(5)     Which machines does this system run on to date?  Sun 3 series (our
+	systems use release 3.4 or thereabouts), sundry Vaxen running
+	4.3BSD, and Encore Multimax 510.  This version also works on
+	Sun 4s and Decstation 3100 series boxes. (Coming down the pike ---
+	implementation for PCs, also an AdaYacc formulation.)
+
+
+Bug fixes or extensions are never guaranteed, but we're happy to have
+feedback on your experiences!
+
+
+Jim Purtilo					Jack Callahan
+purtilo@cs.umd.edu				callahan@cs.umd.edu
+
+
+Institute for Advanced Computer Studies
+   and Computer Science Department
+University of Maryland
+College Park, MD 20742
+

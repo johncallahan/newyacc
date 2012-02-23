@@ -1,0 +1,5 @@
+This is Jim's trivial list reversal example which showed early on
+how NewYacc could do something Yacc can't (easily do).
+
+Try the input string "1 2 3 4 5" for instance.  The output should
+simply be "5 4 3 2 1".
